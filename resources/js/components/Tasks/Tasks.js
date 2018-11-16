@@ -9,12 +9,15 @@ class Tasks extends Component {
         super();
         this.state = {
             tasks: [],
-            checkedTasks: []
+            checkedTasks: [],
+            toggleTasks: true
         };
 
         this.select = this.select.bind(this);
         this.delete = this.delete.bind(this);
         this.complete = this.complete.bind(this);
+        this.uncompletedTasks = this.uncompletedTasks.bind(this);
+        this.completedTasks = this.completedTasks.bind(this);
     }
 
     create() {
@@ -51,6 +54,7 @@ class Tasks extends Component {
         this.state.checkedTasks.map(task => {
             axios.put(`${URL}/${task}`, { completed: true })
                 .then(response => console.log(response))
+                .then(location.reload())
                 .catch(error => console.log(error));
         })
     }
@@ -68,15 +72,52 @@ class Tasks extends Component {
         }
     }
 
-    toggleTasks() {
-        this.setState({ toggleTasks: !this.state.toggleTasks });
-    }
-
     componentWillMount() {
         this.get();
     }
 
+    uncompletedTasks(event) {
+        event.preventDefault();
+        this.setState({ toggleTasks: true });
+    }
+
+    completedTasks(event) {
+        event.preventDefault();
+        this.setState({ toggleTasks: false });
+    }
+
     render() {
+        let tasks;
+
+        if (this.state.toggleTasks) {
+            tasks = this.state.tasks.map(task => {
+                if (!task.completed) {
+                    return(
+                        <li className={'list-group-item'} key={task.id}>
+                            <input id={task.id} onChange={this.select} className="task-checkbox" type="checkbox"/>
+                            <Link
+                                to={`/tasks/${task.id}`}
+                                className={'list-group-item list-group-item-action'}>
+                                {task.title}
+                            </Link>
+                        </li>
+                    )
+                }});
+        } else {
+            tasks = this.state.tasks.map(task => {
+                if (task.completed) {
+                    return(
+                        <li className={'list-group-item'} key={task.id}>
+                            <Link
+                                to={`/tasks/${task.id}`}
+                                className={'list-group-item list-group-item-action'}>
+                                {task.title}
+                            </Link>
+                        </li>
+                    )
+                }});
+        }
+
         return(
             <div className="container">
                 <form onSubmit={this.create}>
@@ -95,19 +136,21 @@ class Tasks extends Component {
 
                 <button className="btn btn-danger" onClick={this.delete}>Delete</button>
 
-                <button className="btn btn-success" onClick={this.complete}>Mark as Complete</button>
+                {this.state.toggleTasks &&
+                    <button className="btn btn-success" onClick={this.complete}>Mark as Complete</button>
+                }
+
+                <ul className="nav nav-tabs">
+                    <li className="nav-item">
+                        <a onClick={this.uncompletedTasks} className={`nav-link ${this.state.toggleTasks ? 'active' : ''}`} href="#">Uncompleted Tasks</a>
+                    </li>
+                    <li className="nav-item">
+                        <a onClick={this.completedTasks} className={`nav-link ${this.state.toggleTasks ? '' : 'active'}`} href="#">Completed Tasks</a>
+                    </li>
+                </ul>
 
                 <ul className="list-group">
-                    {this.state.tasks.map(task => (
-                        <li className={'list-group-item'} key={task.id}>
-                            <input id={task.id} onChange={this.select} className="task-checkbox" type="checkbox"/>
-                            <Link
-                                to={`/tasks/${task.id}`}
-                                className={'list-group-item list-group-item-action'}>
-                                {task.title}
-                            </Link>
-                        </li>
-                    ))}
+                    {tasks}
                 </ul>
             </div>
         )

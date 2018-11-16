@@ -62211,12 +62211,15 @@ var Tasks = function (_Component) {
 
         _this.state = {
             tasks: [],
-            checkedTasks: []
+            checkedTasks: [],
+            toggleTasks: true
         };
 
         _this.select = _this.select.bind(_this);
         _this.delete = _this.delete.bind(_this);
         _this.complete = _this.complete.bind(_this);
+        _this.uncompletedTasks = _this.uncompletedTasks.bind(_this);
+        _this.completedTasks = _this.completedTasks.bind(_this);
         return _this;
     }
 
@@ -62263,7 +62266,7 @@ var Tasks = function (_Component) {
             this.state.checkedTasks.map(function (task) {
                 __WEBPACK_IMPORTED_MODULE_1_axios___default.a.put(__WEBPACK_IMPORTED_MODULE_3__App__["URL"] + "/" + task, { completed: true }).then(function (response) {
                     return console.log(response);
-                }).catch(function (error) {
+                }).then(location.reload()).catch(function (error) {
                     return console.log(error);
                 });
             });
@@ -62288,19 +62291,63 @@ var Tasks = function (_Component) {
             }
         }
     }, {
-        key: "toggleTasks",
-        value: function toggleTasks() {
-            this.setState({ toggleTasks: !this.state.toggleTasks });
-        }
-    }, {
         key: "componentWillMount",
         value: function componentWillMount() {
             this.get();
         }
     }, {
+        key: "uncompletedTasks",
+        value: function uncompletedTasks(event) {
+            event.preventDefault();
+            this.setState({ toggleTasks: true });
+        }
+    }, {
+        key: "completedTasks",
+        value: function completedTasks(event) {
+            event.preventDefault();
+            this.setState({ toggleTasks: false });
+        }
+    }, {
         key: "render",
         value: function render() {
             var _this3 = this;
+
+            var tasks = void 0;
+
+            if (this.state.toggleTasks) {
+                tasks = this.state.tasks.map(function (task) {
+                    if (!task.completed) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "li",
+                            { className: 'list-group-item', key: task.id },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: task.id, onChange: _this3.select, className: "task-checkbox", type: "checkbox" }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                                {
+                                    to: "/tasks/" + task.id,
+                                    className: 'list-group-item list-group-item-action' },
+                                task.title
+                            )
+                        );
+                    }
+                });
+            } else {
+                tasks = this.state.tasks.map(function (task) {
+                    if (task.completed) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "li",
+                            { className: 'list-group-item', key: task.id },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                                {
+                                    to: "/tasks/" + task.id,
+                                    className: 'list-group-item list-group-item-action' },
+                                task.title
+                            )
+                        );
+                    }
+                });
+            }
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 "div",
@@ -62339,28 +62386,37 @@ var Tasks = function (_Component) {
                     { className: "btn btn-danger", onClick: this.delete },
                     "Delete"
                 ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                this.state.toggleTasks && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "button",
                     { className: "btn btn-success", onClick: this.complete },
                     "Mark as Complete"
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "ul",
+                    { className: "nav nav-tabs" },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "li",
+                        { className: "nav-item" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "a",
+                            { onClick: this.uncompletedTasks, className: "nav-link " + (this.state.toggleTasks ? 'active' : ''), href: "#" },
+                            "Uncompleted Tasks"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "li",
+                        { className: "nav-item" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "a",
+                            { onClick: this.completedTasks, className: "nav-link " + (this.state.toggleTasks ? '' : 'active'), href: "#" },
+                            "Completed Tasks"
+                        )
+                    )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "ul",
                     { className: "list-group" },
-                    this.state.tasks.map(function (task) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "li",
-                            { className: 'list-group-item', key: task.id },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: task.id, onChange: _this3.select, className: "task-checkbox", type: "checkbox" }),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                                {
-                                    to: "/tasks/" + task.id,
-                                    className: 'list-group-item list-group-item-action' },
-                                task.title
-                            )
-                        );
-                    })
+                    tasks
                 )
             );
         }
