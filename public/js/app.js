@@ -62218,8 +62218,7 @@ var Tasks = function (_Component) {
         _this.select = _this.select.bind(_this);
         _this.delete = _this.delete.bind(_this);
         _this.complete = _this.complete.bind(_this);
-        _this.uncompletedTasks = _this.uncompletedTasks.bind(_this);
-        _this.completedTasks = _this.completedTasks.bind(_this);
+        _this.toggleTasks = _this.toggleTasks.bind(_this);
         return _this;
     }
 
@@ -62255,10 +62254,10 @@ var Tasks = function (_Component) {
             this.state.checkedTasks.map(function (task) {
                 __WEBPACK_IMPORTED_MODULE_1_axios___default.a.delete(__WEBPACK_IMPORTED_MODULE_3__App__["URL"] + "/" + task).then(function (response) {
                     return console.log(response);
-                }).catch(function (error) {
+                }).then(location.reload()).catch(function (error) {
                     return console.log(error);
                 });
-            }).then(location.reload());
+            });
         }
     }, {
         key: "complete",
@@ -62278,17 +62277,23 @@ var Tasks = function (_Component) {
                 checked = _event$target.checked,
                 id = _event$target.id;
 
+            var checkedTasks = void 0;
 
             if (checked) {
-                var checkedTasks = new Set([].concat(_toConsumableArray(this.state.checkedTasks), [parseInt(id)]));
-                checkedTasks = Array.from(checkedTasks);
+                checkedTasks = [].concat(_toConsumableArray(this.state.checkedTasks), [id]);
                 this.setState({ checkedTasks: checkedTasks });
             } else {
-                var unCheckedTasks = this.state.checkedTasks.filter(function (task) {
-                    return task === id;
+                checkedTasks = this.state.checkedTasks.filter(function (task) {
+                    return task !== id;
                 });
-                this.setState({ checkedTasks: unCheckedTasks });
+                this.setState({ checkedTasks: checkedTasks });
             }
+        }
+    }, {
+        key: "toggleTasks",
+        value: function toggleTasks(event) {
+            event.preventDefault();
+            this.setState({ toggleTasks: !this.state.toggleTasks, checkedTasks: [] });
         }
     }, {
         key: "componentWillMount",
@@ -62296,57 +62301,55 @@ var Tasks = function (_Component) {
             this.get();
         }
     }, {
-        key: "uncompletedTasks",
-        value: function uncompletedTasks(event) {
-            event.preventDefault();
-            this.setState({ toggleTasks: true });
-        }
-    }, {
-        key: "completedTasks",
-        value: function completedTasks(event) {
-            event.preventDefault();
-            this.setState({ toggleTasks: false });
-        }
-    }, {
         key: "render",
         value: function render() {
             var _this3 = this;
 
-            var tasks = void 0;
+            var tasks = this.state.tasks.map(function (task) {
+                var taskList = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "li",
+                    { className: 'list-group-item', key: task.id },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: task.id, onChange: _this3.select, className: "task-checkbox", type: "checkbox" }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                        {
+                            to: "/tasks/" + task.id,
+                            className: 'list-group-item list-group-item-action' },
+                        task.title
+                    )
+                );
 
-            if (this.state.toggleTasks) {
-                tasks = this.state.tasks.map(function (task) {
-                    if (!task.completed) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "li",
-                            { className: 'list-group-item', key: task.id },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: task.id, onChange: _this3.select, className: "task-checkbox", type: "checkbox" }),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                                {
-                                    to: "/tasks/" + task.id,
-                                    className: 'list-group-item list-group-item-action' },
-                                task.title
-                            )
-                        );
-                    }
-                });
-            } else {
-                tasks = this.state.tasks.map(function (task) {
-                    if (task.completed) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "li",
-                            { className: 'list-group-item', key: task.id },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                                {
-                                    to: "/tasks/" + task.id,
-                                    className: 'list-group-item list-group-item-action' },
-                                task.title
-                            )
-                        );
-                    }
-                });
+                if (!task.completed && _this3.state.toggleTasks) {
+                    return taskList;
+                } else if (task.completed && !_this3.state.toggleTasks) {
+                    return taskList;
+                }
+            });
+
+            var completedTaskButtons = void 0;
+            var unCompletedTaskButtons = void 0;
+
+            if (this.state.checkedTasks.length > 0) {
+                completedTaskButtons = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "button",
+                    { className: "btn btn-danger", onClick: this.delete },
+                    "Delete"
+                );
+
+                unCompletedTaskButtons = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "span",
+                    null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "button",
+                        { className: "btn btn-success", onClick: this.complete },
+                        "Mark as Complete"
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "button",
+                        { className: "btn btn-danger", onClick: this.delete },
+                        "Delete"
+                    )
+                );
             }
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -62379,17 +62382,8 @@ var Tasks = function (_Component) {
                         "button",
                         { type: "submit", className: "btn btn-primary" },
                         "Submit"
-                    )
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "button",
-                    { className: "btn btn-danger", onClick: this.delete },
-                    "Delete"
-                ),
-                this.state.toggleTasks && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "button",
-                    { className: "btn btn-success", onClick: this.complete },
-                    "Mark as Complete"
+                    ),
+                    this.state.toggleTasks ? unCompletedTaskButtons : completedTaskButtons
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "ul",
@@ -62399,7 +62393,7 @@ var Tasks = function (_Component) {
                         { className: "nav-item" },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             "a",
-                            { onClick: this.uncompletedTasks, className: "nav-link " + (this.state.toggleTasks ? 'active' : ''), href: "#" },
+                            { onClick: this.toggleTasks, className: "nav-link " + (this.state.toggleTasks ? 'active' : ''), href: "#" },
                             "Uncompleted Tasks"
                         )
                     ),
@@ -62408,7 +62402,7 @@ var Tasks = function (_Component) {
                         { className: "nav-item" },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             "a",
-                            { onClick: this.completedTasks, className: "nav-link " + (this.state.toggleTasks ? '' : 'active'), href: "#" },
+                            { onClick: this.toggleTasks, className: "nav-link " + (this.state.toggleTasks ? '' : 'active'), href: "#" },
                             "Completed Tasks"
                         )
                     )
