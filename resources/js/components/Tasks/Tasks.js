@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from "axios";
-import { Link } from "react-router-dom";
 
 import { URL } from '../App';
+
+import Form from './Form/Form';
+import List from './List/List';
 
 class Tasks extends Component {
     constructor() {
@@ -19,7 +21,7 @@ class Tasks extends Component {
         this.toggleTasks = this.toggleTasks.bind(this);
     }
 
-    create() {
+    create(event) {
         event.preventDefault();
 
         const title = event.target.title.value;
@@ -71,9 +73,9 @@ class Tasks extends Component {
         }
     }
 
-    toggleTasks(event) {
+    toggleTasks(event, bool) {
         event.preventDefault();
-        this.setState({ toggleTasks: !this.state.toggleTasks, checkedTasks: [] });
+        this.setState({ toggleTasks: bool, checkedTasks: [] });
     }
 
     componentWillMount() {
@@ -81,72 +83,43 @@ class Tasks extends Component {
     }
 
     render() {
-        const tasks = this.state.tasks.map(task => {
-            const taskList = <li className={'list-group-item'} key={task.id}>
-                                <input id={task.id} onChange={this.select} className="task-checkbox" type="checkbox"/>
-                                <Link
-                                    to={`/tasks/${task.id}`}
-                                    className={'list-group-item list-group-item-action'}>
-                                    {task.title}
-                                </Link>
-                            </li>;
-
-            if (!task.completed && this.state.toggleTasks) {
-                return taskList;
-            } else if (task.completed && !this.state.toggleTasks) {
-                return taskList;
-            }
-        });
-
         let completedTaskButtons;
         let unCompletedTaskButtons;
+        let taskTabs;
 
         if (this.state.checkedTasks.length > 0) {
             completedTaskButtons = <button className="btn btn-danger" onClick={this.delete}>Delete</button>;
-            
+
             unCompletedTaskButtons = <span>
                 <button className="btn btn-success" onClick={this.complete}>Mark as Complete</button>
                 <button className="btn btn-danger" onClick={this.delete}>Delete</button>
             </span>;
         }
 
+        if (this.state.tasks.length > 0) {
+            taskTabs = <ul className="nav nav-tabs">
+                <li className="nav-item">
+                    <a onClick={() => this.toggleTasks(event, true)} className={`nav-link ${this.state.toggleTasks ? 'active' : ''}`} href="#">Uncompleted Tasks</a>
+                </li>
+                <li className="nav-item">
+                    <a onClick={() => this.toggleTasks(event, false)} className={`nav-link ${this.state.toggleTasks ? '' : 'active'}`} href="#">Completed Tasks</a>
+                </li>
+            </ul>
+        }
 
         return(
             <div className="container">
-                <form onSubmit={this.create}>
-                    <div className="form-group">
-                        <label htmlFor="title">Title:</label>
-                        <input name="title" type="text" className="form-control"/>
-                    </div>
+                <Form onSubmit={this.create} />
 
-                    <div className="form-group">
-                        <label htmlFor="body">Body:</label>
-                        <textarea name="body" type="text" className="form-control"/>
-                    </div>
+                { taskTabs }
 
-                    <button type="submit" className="btn btn-primary">Submit</button>
+                <List tasks={this.state.tasks} select={this.select} toggleTasks={this.state.toggleTasks} />
 
-                    {this.state.toggleTasks ? (
-                        unCompletedTaskButtons
-                    ) : (
-                        completedTaskButtons
-                    )}
-                </form>
 
-                <ul className="nav nav-tabs">
-                    <li className="nav-item">
-                        <a onClick={this.toggleTasks} className={`nav-link ${this.state.toggleTasks ? 'active' : ''}`} href="#">Uncompleted Tasks</a>
-                    </li>
-                    <li className="nav-item">
-                        <a onClick={this.toggleTasks} className={`nav-link ${this.state.toggleTasks ? '' : 'active'}`} href="#">Completed Tasks</a>
-                    </li>
-                </ul>
+                { this.state.toggleTasks ? unCompletedTaskButtons : completedTaskButtons }
 
-                <ul className="list-group">
-                    {tasks}
-                </ul>
             </div>
-        )
+        );
     }
 }
 

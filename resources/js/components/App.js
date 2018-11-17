@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 import Tasks from './Tasks/Tasks';
 import Task from './Tasks/Task/Task';
 import Home from './Home/Home';
-import Nav from './Partials/Nav';
 
 export const URL = '/api/tasks';
 
@@ -15,21 +14,34 @@ const routes = [
         path: '/tasks/:task'
     },
     {
-        component: Tasks,
-        path: '/tasks'
+        component: Home,
+        path: '/',
+        name: 'Home'
     },
     {
-        component: Home,
-        path: '/'
+        component: Tasks,
+        path: '/tasks',
+        name: 'Tasks'
     }
 ];
 
 class App extends Component {
     render() {
+        const filteredRoutes = routes.filter(route => route.path !== '/tasks/:task');
         return (
             <Router>
                 <div className="container">
-                    <Nav />
+                    <ul className="nav nav-tabs">
+                        {filteredRoutes.map(route =>
+                            <li className="nav-item">
+                                <Link
+                                    to={route.path}
+                                    className="nav-link">
+                                        {route.name}
+                                </Link>
+                            </li>
+                        )}
+                    </ul>
                     <div className="row">
                         <div className="col-sm-6">
                             {routes.map(route =>

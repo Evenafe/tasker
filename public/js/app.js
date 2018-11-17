@@ -912,7 +912,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Tasks_Tasks__ = __webpack_require__(92);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Tasks_Task_Task__ = __webpack_require__(93);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Home_Home__ = __webpack_require__(94);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Partials_Nav__ = __webpack_require__(95);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -929,18 +928,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-
 var URL = '/api/tasks';
 
 var routes = [{
     component: __WEBPACK_IMPORTED_MODULE_4__Tasks_Task_Task__["a" /* default */],
     path: '/tasks/:task'
 }, {
-    component: __WEBPACK_IMPORTED_MODULE_3__Tasks_Tasks__["a" /* default */],
-    path: '/tasks'
-}, {
     component: __WEBPACK_IMPORTED_MODULE_5__Home_Home__["a" /* default */],
-    path: '/'
+    path: '/',
+    name: 'Home'
+}, {
+    component: __WEBPACK_IMPORTED_MODULE_3__Tasks_Tasks__["a" /* default */],
+    path: '/tasks',
+    name: 'Tasks'
 }];
 
 var App = function (_Component) {
@@ -955,13 +955,32 @@ var App = function (_Component) {
     _createClass(App, [{
         key: 'render',
         value: function render() {
+            var filteredRoutes = routes.filter(function (route) {
+                return route.path !== '/tasks/:task';
+            });
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["a" /* BrowserRouter */],
                 null,
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'container' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__Partials_Nav__["a" /* default */], null),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'ul',
+                        { className: 'nav nav-tabs' },
+                        filteredRoutes.map(function (route) {
+                            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'li',
+                                { className: 'nav-item' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
+                                    {
+                                        to: route.path,
+                                        className: 'nav-link' },
+                                    route.name
+                                )
+                            );
+                        })
+                    ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
                         { className: 'row' },
@@ -62183,8 +62202,9 @@ module.exports = hoistNonReactStatics;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_router_dom__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__App__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Form_Form__ = __webpack_require__(101);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__List_List__ = __webpack_require__(102);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -62194,6 +62214,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
 
 
 
@@ -62223,25 +62245,25 @@ var Tasks = function (_Component) {
     }
 
     _createClass(Tasks, [{
-        key: "create",
-        value: function create() {
+        key: 'create',
+        value: function create(event) {
             event.preventDefault();
 
             var title = event.target.title.value;
             var body = event.target.body.value;
 
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post(__WEBPACK_IMPORTED_MODULE_3__App__["URL"], { title: title, body: body }).then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post(__WEBPACK_IMPORTED_MODULE_2__App__["URL"], { title: title, body: body }).then(function (response) {
                 return console.log(response);
             }).then(location.reload()).catch(function (error) {
                 return console.log(error);
             });
         }
     }, {
-        key: "get",
+        key: 'get',
         value: function get() {
             var _this2 = this;
 
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(__WEBPACK_IMPORTED_MODULE_3__App__["URL"]).then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get(__WEBPACK_IMPORTED_MODULE_2__App__["URL"]).then(function (response) {
                 var tasks = response.data;
                 _this2.setState({ tasks: tasks });
             }).catch(function (error) {
@@ -62249,10 +62271,10 @@ var Tasks = function (_Component) {
             });
         }
     }, {
-        key: "delete",
+        key: 'delete',
         value: function _delete() {
             this.state.checkedTasks.map(function (task) {
-                __WEBPACK_IMPORTED_MODULE_1_axios___default.a.delete(__WEBPACK_IMPORTED_MODULE_3__App__["URL"] + "/" + task).then(function (response) {
+                __WEBPACK_IMPORTED_MODULE_1_axios___default.a.delete(__WEBPACK_IMPORTED_MODULE_2__App__["URL"] + '/' + task).then(function (response) {
                     return console.log(response);
                 }).then(location.reload()).catch(function (error) {
                     return console.log(error);
@@ -62260,10 +62282,10 @@ var Tasks = function (_Component) {
             });
         }
     }, {
-        key: "complete",
+        key: 'complete',
         value: function complete() {
             this.state.checkedTasks.map(function (task) {
-                __WEBPACK_IMPORTED_MODULE_1_axios___default.a.put(__WEBPACK_IMPORTED_MODULE_3__App__["URL"] + "/" + task, { completed: true }).then(function (response) {
+                __WEBPACK_IMPORTED_MODULE_1_axios___default.a.put(__WEBPACK_IMPORTED_MODULE_2__App__["URL"] + '/' + task, { completed: true }).then(function (response) {
                     return console.log(response);
                 }).then(location.reload()).catch(function (error) {
                     return console.log(error);
@@ -62271,7 +62293,7 @@ var Tasks = function (_Component) {
             });
         }
     }, {
-        key: "select",
+        key: 'select',
         value: function select(event) {
             var _event$target = event.target,
                 checked = _event$target.checked,
@@ -62290,128 +62312,84 @@ var Tasks = function (_Component) {
             }
         }
     }, {
-        key: "toggleTasks",
-        value: function toggleTasks(event) {
+        key: 'toggleTasks',
+        value: function toggleTasks(event, bool) {
             event.preventDefault();
-            this.setState({ toggleTasks: !this.state.toggleTasks, checkedTasks: [] });
+            this.setState({ toggleTasks: bool, checkedTasks: [] });
         }
     }, {
-        key: "componentWillMount",
+        key: 'componentWillMount',
         value: function componentWillMount() {
             this.get();
         }
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var _this3 = this;
 
-            var tasks = this.state.tasks.map(function (task) {
-                var taskList = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "li",
-                    { className: 'list-group-item', key: task.id },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { id: task.id, onChange: _this3.select, className: "task-checkbox", type: "checkbox" }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        __WEBPACK_IMPORTED_MODULE_2_react_router_dom__["b" /* Link */],
-                        {
-                            to: "/tasks/" + task.id,
-                            className: 'list-group-item list-group-item-action' },
-                        task.title
-                    )
-                );
-
-                if (!task.completed && _this3.state.toggleTasks) {
-                    return taskList;
-                } else if (task.completed && !_this3.state.toggleTasks) {
-                    return taskList;
-                }
-            });
-
             var completedTaskButtons = void 0;
             var unCompletedTaskButtons = void 0;
+            var taskTabs = void 0;
 
             if (this.state.checkedTasks.length > 0) {
                 completedTaskButtons = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "button",
-                    { className: "btn btn-danger", onClick: this.delete },
-                    "Delete"
+                    'button',
+                    { className: 'btn btn-danger', onClick: this.delete },
+                    'Delete'
                 );
 
                 unCompletedTaskButtons = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "span",
+                    'span',
                     null,
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "button",
-                        { className: "btn btn-success", onClick: this.complete },
-                        "Mark as Complete"
+                        'button',
+                        { className: 'btn btn-success', onClick: this.complete },
+                        'Mark as Complete'
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "button",
-                        { className: "btn btn-danger", onClick: this.delete },
-                        "Delete"
+                        'button',
+                        { className: 'btn btn-danger', onClick: this.delete },
+                        'Delete'
+                    )
+                );
+            }
+
+            if (this.state.tasks.length > 0) {
+                taskTabs = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'ul',
+                    { className: 'nav nav-tabs' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'li',
+                        { className: 'nav-item' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'a',
+                            { onClick: function onClick() {
+                                    return _this3.toggleTasks(event, true);
+                                }, className: 'nav-link ' + (this.state.toggleTasks ? 'active' : ''), href: '#' },
+                            'Uncompleted Tasks'
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'li',
+                        { className: 'nav-item' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'a',
+                            { onClick: function onClick() {
+                                    return _this3.toggleTasks(event, false);
+                                }, className: 'nav-link ' + (this.state.toggleTasks ? '' : 'active'), href: '#' },
+                            'Completed Tasks'
+                        )
                     )
                 );
             }
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "container" },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "form",
-                    { onSubmit: this.create },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "div",
-                        { className: "form-group" },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "label",
-                            { htmlFor: "title" },
-                            "Title:"
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { name: "title", type: "text", className: "form-control" })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "div",
-                        { className: "form-group" },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "label",
-                            { htmlFor: "body" },
-                            "Body:"
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("textarea", { name: "body", type: "text", className: "form-control" })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "button",
-                        { type: "submit", className: "btn btn-primary" },
-                        "Submit"
-                    ),
-                    this.state.toggleTasks ? unCompletedTaskButtons : completedTaskButtons
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "ul",
-                    { className: "nav nav-tabs" },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "li",
-                        { className: "nav-item" },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "a",
-                            { onClick: this.toggleTasks, className: "nav-link " + (this.state.toggleTasks ? 'active' : ''), href: "#" },
-                            "Uncompleted Tasks"
-                        )
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "li",
-                        { className: "nav-item" },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "a",
-                            { onClick: this.toggleTasks, className: "nav-link " + (this.state.toggleTasks ? '' : 'active'), href: "#" },
-                            "Completed Tasks"
-                        )
-                    )
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "ul",
-                    { className: "list-group" },
-                    tasks
-                )
+                'div',
+                { className: 'container' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Form_Form__["a" /* default */], { onSubmit: this.create }),
+                taskTabs,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__List_List__["a" /* default */], { tasks: this.state.tasks, select: this.select, toggleTasks: this.state.toggleTasks }),
+                this.state.toggleTasks ? unCompletedTaskButtons : completedTaskButtons
             );
         }
     }]);
@@ -62574,7 +62552,18 @@ var Home = function Home() {
 /* harmony default export */ __webpack_exports__["a"] = (Home);
 
 /***/ }),
-/* 95 */
+/* 95 */,
+/* 96 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 97 */,
+/* 98 */,
+/* 99 */,
+/* 100 */,
+/* 101 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -62582,42 +62571,82 @@ var Home = function Home() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 
 
-var Nav = function Nav() {
+var Form = function Form(props) {
+    console.log(props);
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        "div",
-        { className: "container-fluid" },
+        "form",
+        { onSubmit: props.onSubmit },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            "ul",
-            { className: "nav nav-tabs" },
+            "div",
+            { className: "form-group" },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "li",
-                { className: "nav-item" },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "a",
-                    { href: "/", className: "nav-link" },
-                    "Home"
-                )
+                "label",
+                { htmlFor: "title" },
+                "Title:"
             ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { name: "title", type: "text", className: "form-control" })
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "form-group" },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "li",
-                { className: "nav-item" },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "a",
-                    { href: "/tasks", className: "nav-link" },
-                    "Tasks"
-                )
-            )
+                "label",
+                { htmlFor: "body" },
+                "Body:"
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("textarea", { name: "body", type: "text", className: "form-control" })
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "button",
+            { type: "submit", className: "btn btn-primary" },
+            "Submit"
         )
     );
 };
 
-/* harmony default export */ __webpack_exports__["a"] = (Nav);
+/* harmony default export */ __webpack_exports__["a"] = (Form);
 
 /***/ }),
-/* 96 */
-/***/ (function(module, exports) {
+/* 102 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// removed by extract-text-webpack-plugin
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_router_dom__ = __webpack_require__(27);
+
+
+
+var List = function List(props) {
+    var tasks = props.tasks.map(function (task) {
+        var taskList = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'li',
+            { className: 'list-group-item', key: task.id },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { id: task.id, onChange: props.select, className: 'task-checkbox', type: 'checkbox' }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["b" /* Link */],
+                {
+                    to: '/tasks/' + task.id,
+                    className: 'list-group-item list-group-item-action' },
+                task.title
+            )
+        );
+
+        if (!task.completed && props.toggleTasks) {
+            return taskList;
+        } else if (task.completed && !props.toggleTasks) {
+            return taskList;
+        }
+    });
+
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'ul',
+        { className: 'list-group' },
+        tasks
+    );
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (List);
 
 /***/ })
 /******/ ]);

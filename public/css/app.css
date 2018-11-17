@@ -10466,13 +10466,62 @@ a.text-dark:focus {
   }
 }
 
-.navbar-laravel {
-  background-color: #fff;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+body {
+  background: #1e1e1e;
+  color: white;
 }
 
-.fa-trash-alt {
+input,
+button,
+textarea {
+  border: none;
+  border-radius: 0px !important;
+}
+
+button {
+  margin-right: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+button.btn-danger {
   float: right;
+  margin-right: 0;
+}
+
+button.btn-primary {
+  margin-top: 0;
+  background: #ffd861;
+  color: black;
+  border: none;
+  padding: 10px 30px;
+}
+
+button.btn-primary:hover {
+  background: #e5c257;
+  color: black;
+}
+
+a.nav-link {
+  border-radius: 0px !important;
+  color: #fff;
+}
+
+a.nav-link:visited {
+  background: red;
+}
+
+a.list-group-item-action {
+  -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+}
+
+.list-group-item {
+  border-radius: 0px !important;
+}
+
+.centered {
+  margin: 0 auto !important;
 }
 
